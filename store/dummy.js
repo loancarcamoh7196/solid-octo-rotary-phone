@@ -13,12 +13,15 @@ async function get (tabla, id){
   return col.filter(item => item.id == id)[0] || null;
 }
 
- upsert= (tabla, data)=>{
-  db[collection].push(data)
+async  function upsert(tabla, data){
+  if (!db[tabla])  db[tabla] = [];
+
+  db[tabla].push(data);
+  console.log(db);
 }
 
-const remove=(tabla, id)=>{
-  return true;
+async function remove(tabla, id) {
+	return true;
 }
 
 module.exports = {
