@@ -22,16 +22,23 @@ module.exports = function (injectedStore) {
 	 * @returns token firmado
 	 */
 	const login = async (username, password) => {
-		const data = await store.query(TABLA, { username: username });
+		try {
+			const data = await store.query(TABLA, { username: username });
 
-		return bcrypt.compare(password, data.password).then((sonIguales) => {
-			if (sonIguales) {
-				// Generar token;
-				return auth.sign(data);
-			} else {
-				throw new Error('Informacion invalida');
-			}
-		});
+		return bcrypt
+			.compare(password, data.password)
+			.then((sonIguales) => {
+				if (sonIguales) {
+					// Generar token;
+					return auth.sign(data);
+				} else {
+					throw new Error('Informacion invalida');
+				}
+			});
+		} catch (error) {
+			throw new Error('Informacion invalida');
+		}
+	
 	};	
 
 	async function upsert(data) {

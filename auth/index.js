@@ -1,3 +1,6 @@
+/**
+ * * Utils encargado del manejo de Tokens
+ */
 const jwt = require('jsonwebtoken');
 const error = require('@utils/error');
 const { config } = require('@config');
@@ -22,24 +25,20 @@ const check = {
 	},
 };
 
-function getToken(auth) {
+const getToken = (auth)=> {
 	if (!auth)  throw error('No viene token', 400);
-
-	if (auth.indexOf('Bearer ') === -1) {
-		throw new Error('Formato invalido');
-	}
-
+	if (auth.indexOf('Bearer ') === -1)  throw error('Formato invalido', 401);
+	
 	let token = auth.replace('Bearer ', '');
 	return token;
 }
 
-function decodeHeader(req) {
+const decodeHeader = (req)=> {
 	const authorization = req.headers.authorization || '';
 	const token = getToken(authorization);
 	const decoded = verify(token);
 
 	req.user = decoded;
-
 	return decoded;
 }
 
