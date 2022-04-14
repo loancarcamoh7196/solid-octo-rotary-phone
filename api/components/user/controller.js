@@ -1,15 +1,17 @@
-const store = require('../../../store/dummy');
+/**
+ * * Controlador / service  de User ~ Usuario
+ */
+const store = require('@store/dummy');
 const auth = require('../auth');
 
+//Nombre de la Tabla
 const TABLA = 'user';
 
 module.exports = (injectedStore) => {
 	let store = injectedStore;
 
-	if (!store) {
-		store = require('../../../store/dummy');
-	}
-
+	if (!store)  store = require('@store/dummy');
+	
 	function list() {
 		return store.list(TABLA);
 	}

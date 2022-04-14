@@ -1,3 +1,6 @@
+/**
+ * Archivo contenedor de data
+ */
 const db = {
   'user': [
     {id: '1', name: 'Lorena'}

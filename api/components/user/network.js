@@ -1,14 +1,14 @@
 /**
  * Archivo Controlador de Rutas para usuario
+ * ? URI: /api/users
  */
 const express = require('express');
-
-const response = require('../../../network/response');
+const response = require('@network/response');
 const Controller = require('./index');
 
-const router = express.Router();
+const router = express.Router(); // Manejador de Rutas
 
-// Routes
+// Routas del Mantendor
 router.get('/', list)
 router.get('/:id', get);
 router.post('/', upsert);
@@ -17,33 +17,33 @@ router.patch('/', upsert);
 //Funcionamiento Interno
 function list(req, res) {
   Controller.list()
-    .then((lista) => {
-        response.success(req, res, lista, 200);
-    })
-    .catch((err) => {
-        response.error(req, res, err.message, 500);
-    });
-}
-
-function get(req, res) {
-Controller.get(req.params.id)
-  .then((user) => {
-      response.success(req, res, user, 200);
+  .then((lista) => {
+      response.success(req, res, lista, 200);
   })
   .catch((err) => {
       response.error(req, res, err.message, 500);
-    });
+  });
+}
+
+function get(req, res) {
+  Controller.get(req.params.id)
+    .then((user) => {
+        response.success(req, res, user, 200);
+    })
+    .catch((err) => {
+        response.error(req, res, err.message, 500);
+      });
   
 }
 
 function upsert(req, res) {
   Controller.upsert(req.body)
-      .then((user) => {
-          response.success(req, res, user, 201);
-      })
-      .catch((err) => {
-          response.error(req, res, err.message, 500);
-      });
+    .then((user) => {
+        response.success(req, res, user, 201);
+    })
+    .catch((err) => {
+        response.error(req, res, err.message, 500);
+    });
     
 }
 
