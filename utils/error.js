@@ -4,7 +4,7 @@
  * @param {int} code Codigo HTTP de error
  * @returns Error compuesto
  */
-const err= (message, code) =>{
+const err = (message, code) =>{
 	let e = new Error(message);
 
 	if (code) {
