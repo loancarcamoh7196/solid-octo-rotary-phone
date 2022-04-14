@@ -10,15 +10,15 @@ module.exports = (injectedStore) => {
 		store = require('../../../store/dummy');
 	}
 
-	const list = () => {
+	function list() {
 		return store.list(TABLA);
-	};
+	}
 
-	const get = (id) => {
+	function get(id) {
 		return store.get(TABLA, id);
-	};
+	}
 
-	const upsert = async(body)=> {
+	async function upsert(body) {
 		const user = {
 			name: body.name,
 			username: body.username,
@@ -27,7 +27,7 @@ module.exports = (injectedStore) => {
 		if (body.id) {
 			user.id = body.id;
 		} else {
-			user.id = '123456';
+			user.id = '1155222';
 		}
 
 		if (body.password || body.username) {
@@ -44,6 +44,6 @@ module.exports = (injectedStore) => {
 	return {
 		list,
 		get,
-		upsert
+		upsert,
 	};
 };
