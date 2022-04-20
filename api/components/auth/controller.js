@@ -1,13 +1,14 @@
 /**
  * * Controlador / Service de Autenticación
- * 
  */
-
 const bcrypt = require('bcrypt');
 const auth = require('@auth');
+const passport = require('passport');
+const user = require('../user');
 
-// Nombre de la Tabla
-const TABLA = 'auth';
+//Datos Especificos de BD
+const DB_NAME = 'empresas_';
+const TABLA = 'usr_';
 
 module.exports = function (injectedStore) {
 	let store = injectedStore;
@@ -23,38 +24,43 @@ module.exports = function (injectedStore) {
 	 */
 	const login = async (username, password) => {
 		try {
-			const data = await store.query(TABLA, { username: username });
+			const data = await store.query(DB_NAME, TABLA, { username: username });
+			// console.log(data);
 
-		return bcrypt
-			.compare(password, data.password)
-			.then((sonIguales) => {
-				if (sonIguales) {
-					// Generar token;
-					return auth.sign(data);
-				} else {
-					throw new Error('Informacion invalida');
-				}
-			});
+			const isMatch = await bcrypt.compare(password, data.password); 
+
+			if(isMatch){
+				const userSigned = auth.sign(data);
+				userSigned.user.token = userSigned.refreshToken;
+				// console.log(userSigned);
+
+				const qry = updateToken({ ...data, token: userSigned.refreshToken }); // Actualizar token dentro de BD
+
+				if (!qry) {
+					throw boom.badRequest();
+				} 
+
+				return userSigned; // Retorna info de usuario, token login, refresh token
+
+			} else new Error ('Credenciales son invalidas.')
+
+			
 		} catch (error) {
 			throw new Error('Informacion invalida');
 		}
 	
 	};	
 
-	async function upsert(data) {
-		const authData = {
-			id: data.id,
-		};
 
-		if (data.username)  authData.username = data.username;
-		if (data.password) authData.password = await bcrypt.hash(data.password, 5);
-		
 
-		return store.upsert(TABLA, authData);
+	
+
+	async function updateToken(data) {
+		return await store.update(DB_NAME,TABLA, data, {id: data.id});
 	}
 
 	return {
 		login,
-		upsert,
+		updateToken,
 	};
 };

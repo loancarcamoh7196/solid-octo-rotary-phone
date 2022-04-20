@@ -1,51 +1,65 @@
 /**
  * * Controlador / service  de User ~ Usuario
  */
-const store = require('@store/dummy');
-const auth = require('../auth');
+const bcrypt = require('bcrypt');
+const auth = require('../auth');	
 
-//Nombre de la Tabla
-const TABLA = 'user';
+//Datos Especificos de BD
+const DB_NAME = 'empresas_';
+const TABLA = 'usr_';
 
+//InjectedStore se encuentra declarada en index.js de la carpeta
 module.exports = (injectedStore) => {
-	let store = injectedStore;
+	let store = injectedStore;// Utilizamos store declara en el index de la carpeta
 
 	if (!store)  store = require('@store/dummy');
 	
-	function list() {
-		return store.list(TABLA);
+	const list = () => {
+		return store.list(DB_NAME,TABLA);
 	}
 
-	function get(id) {
-		return store.get(TABLA, id);
+	//Obtiene listado por id de 	
+	const get = (params) => {
+		// const { id } = params;
+		return store.get(DB_NAME, TABLA, params);
 	}
 
-	async function upsert(body) {
+	const update = (body, id) => {
 		const user = {
-			name: body.name,
+			emp_rut: body.empRut,
 			username: body.username,
+			password: body.password,
+			token: body.token,
+			email: body.email
 		};
 
-		if (body.id) {
-			user.id = body.id;
-		} else {
-			user.id = '1155222';
-		}
+		return store.update(DB_NAME, TABLA, user, id);
+	}
 
-		if (body.password || body.username) {
-			await auth.upsert({
-				id: user.id,
-				username: user.username,
-				password: body.password,
-			});
-		}
+	const insert = async(body) => {
+		let passHashed = await bcrypt.hash(body.password, 10);
+		
+		// Descontrucción de cuerpo de petición HTTP
+		const user = {
+			emp_rut: body.empRut,
+			username: body.username,
+			password: passHashed,
+			token: body.token,
+			email: body.email,
+		};
+		
+		return store.insert(DB_NAME, TABLA, user);
+	}
 
-		return store.upsert(TABLA, user);
+	const drop = ( id ) =>{
+		return store.drop(DB_NAME, TABLA, id)
 	}
 
 	return {
 		list,
 		get,
-		upsert,
+		update,
+		insert,
+		drop
 	};
 };

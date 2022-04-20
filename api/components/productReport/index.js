@@ -1,5 +1,5 @@
 /**
- * * Handler de Mantenedor Usuario
+ * * Handler de Mantenedor Product Report
  * ! NO TOCAR
  */
 const store = require('@store/mysql');

@@ -1,0 +1,11 @@
+{
+  "databases": {
+    
+    "gestioncoffetest": { 
+      "uri": "mysql://root:endif.5283@186.67.44.110:3408/gestioncoffeetest" 
+    },
+    "gestiontest": { 
+      "uri": "mysql://root:endif.5283@186.67.44.110:3408/gestiontest" 
+    }
+  }
+}

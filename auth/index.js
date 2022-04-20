@@ -9,7 +9,13 @@ const secret = config.jwt.token;
 // console.log('Secret: ', secret);
 
 function sign(data) {
-	return jwt.sign(data, secret);
+	const payload = { sub: data.id };
+	const token = jwt.sign(payload, config.jwt.token, { expiresIn: '2m' });
+	const refreshToken = jwt.sign(payload, config.jwt.refresh, { expiresIn: '30m' });
+	
+	delete data.password; // Quitar de datos retornados la password
+
+	return { user: {...data}, token, refreshToken };
 }
 
 function verify(token) {
@@ -21,7 +27,13 @@ const check = {
 		const decoded = decodeHeader(req);
 		console.log(decoded);
 
-		if (decoded.id !== owner)  throw error('No esta autorizado ha hacer esto', 401);
+		if (decoded.id !== owner)
+			throw error('No esta autorizado ha hacer esto', 401);
+	},
+	logged: function (req, owner) {
+		const decoded = decodeHeader(req);
+		if (decoded.id !== owner)
+			throw error('No esta autorizado ha hacer esto', 401);
 	},
 };
 
