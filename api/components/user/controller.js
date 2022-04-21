@@ -21,6 +21,7 @@ module.exports = (injectedStore) => {
 	//Obtiene listado por id de 	
 	const get = (params) => {
 		// const { id } = params;
+		
 		return store.get(DB_NAME, TABLA, params);
 	}
 

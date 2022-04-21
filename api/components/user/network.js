@@ -63,11 +63,11 @@ router.patch('/:id',
 
     const { id } = req.params;
 
-    Controller.update(req.body, id)
-      .then((user) => {
-        response.success(req, res, user, 201);
-      })
-      .catch(next);
+    Controller.update(req.body, req.paramsid)
+		.then((user) => {
+			response.success(req, res, user, 201);
+		})
+		.catch(next);
   }
 );
 

@@ -3,6 +3,7 @@
  *? URI: /
  */
 const  express = require('express');
+const cors = require('cors');
 require('module-alias/register');
 
 const  bodyParser = require('body-parser');
@@ -22,8 +23,23 @@ const productReport = require('@components/productReport/network');
 
 const swaggerDoc = require('@api/swagger.json');
 
+// Whitlist de acceso a API, tener en cuenta 
+const whitelist = [
+    'http://localhost:8080',
+    'http://127.0.0.1:8080',
+    'http://0.0.0.0:8080',
+    'https://myapp.com',
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    'http://localhost:3000',
+    'http://localhost',
+    'http://localhost:3005'
+];
+
+
 const app = express();
 
+app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 
 

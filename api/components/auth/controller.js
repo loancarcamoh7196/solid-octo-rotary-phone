@@ -9,6 +9,7 @@ const user = require('../user');
 //Datos Especificos de BD
 const DB_NAME = 'empresas_';
 const TABLA = 'usr_';
+const COMPANY_TABLE = 'emp_'
 
 module.exports = function (injectedStore) {
 	let store = injectedStore;
@@ -33,17 +34,15 @@ module.exports = function (injectedStore) {
 				const userSigned = auth.sign(data);
 				userSigned.user.token = userSigned.refreshToken;
 				// console.log(userSigned);
-
 				const qry = updateToken({ ...data, token: userSigned.refreshToken }); // Actualizar token dentro de BD
-
-				if (!qry) {
-					throw boom.badRequest();
-				} 
-
+				if (!qry)  throw boom.badRequest();
+				// console.log(data.id)
+				const empresa = await store.query(DB_NAME, COMPANY_TABLE, {rut: data.id});
+				console.log(empresa.bd_nombre);
+				userSigned.user.bd_nombre = empresa.bd_nombre;
 				return userSigned; // Retorna info de usuario, token login, refresh token
 
 			} else new Error ('Credenciales son invalidas.')
-
 			
 		} catch (error) {
 			throw new Error('Informacion invalida');

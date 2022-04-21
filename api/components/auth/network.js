@@ -1,6 +1,6 @@
 /**
  * * Archivo de rutas de modulo Auth
- * ? URI: /api/auth
+ * ? URI: /api/v1/auth
  */
 const express = require('express');
 

@@ -30,7 +30,7 @@ function handleCon() {
 			console.error('[db err]', err);
 			setTimeout(handleCon, 2000);
 		} else {
-			console.log('DB Connected!');
+			console.log('	BD Conecteda! ');
 		}
 	});
 
@@ -102,7 +102,10 @@ const get = (db, table, params) => {
 	// console.log(params);
 	qry = sanearParams(params);
 
-	if(qry == null) {
+	console.log(typeof(qry))
+
+	if(qry == '') {
+		// console.log('Pso por aqui')
 	return new Promise((resolve, reject) => {
 		connection.query(`SELECT * FROM ${db}.${table} WHERE  ?`, params, (err, data) => {
 			if (err) return reject(err);

@@ -15,10 +15,10 @@ const router = express.Router(); // Manejador de Rutas
  * @param {response} res Respuesta de la petición
  * @param {*} next Excepción arrojada
  */
-router.get('/', (req, res, next) => {
+router.get('/:lista_id', (req, res, next) => {
 	const { empresaBd } = req.query;
 
-	Controller.list(empresaBd)
+	Controller.get(empresaBd, req.body, req.params)
 		.then((lista) => {
 			response.success(req, res, lista, 200);
 		})
@@ -28,7 +28,7 @@ router.get('/', (req, res, next) => {
 /**
  * Ruta encargada de mostrar empresa especifico
  */
-router.get('/:producto_id/detail/:lista_id', (req, res, next) => {
+router.get('/:producto_id/detail/:precio_id', (req, res, next) => {
 	const { empresaBd } = req.query;
 
 	Controller.get(empresaBd, req.body, req.params)
