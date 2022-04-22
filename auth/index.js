@@ -10,8 +10,8 @@ const secret = config.jwt.token;
 
 function sign(data) {
 	const payload = { sub: data.id };
-	const token = jwt.sign(payload, config.jwt.token, { expiresIn: '2m' });
-	const refreshToken = jwt.sign(payload, config.jwt.refresh, { expiresIn: '30m' });
+	const token = jwt.sign(payload, config.jwt.token, { expiresIn: '1m' });
+	const refreshToken = jwt.sign(payload, config.jwt.refresh, { expiresIn: '5m' });
 	
 	delete data.password; // Quitar de datos retornados la password
 

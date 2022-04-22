@@ -46,10 +46,11 @@ module.exports = function (injectedStore) {
 	};	
 
 	const refresh = async(data) =>{
+		console.log('Paso por refresh')
 		// console.log(data);
 		const  token = sanearTokenAuthBear(data.headers.authorization);
 
-		let isCorrect = jwt.verify(token, config.jwt.refresh);
+		let isCorrect = jwt.verify(token, config.jwt.refresh, {ignoreExpiration: true} );
 		// console.log('Es correcto: ', isCorrect)
 		if (!isCorrect) throw new Error('Acceso denegado');
 		const user = findUser({ id: isCorrect.sub });
@@ -57,14 +58,13 @@ module.exports = function (injectedStore) {
 
 		const payload = { sub: isCorrect.sub };
 		const refreshToken = jwt.sign(payload, config.jwt.refresh, {
-			expiresIn: '1d',
+			expiresIn: '30m',
 		});
 
 		// console.log('ID user:', isCorrect.sub);
-		const res = updateToken({ token: refreshToken },{ id: isCorrect.sub } );
+		const res = updateToken({ token: refreshToken , id: isCorrect.sub } );
+		console.log(refreshToken)
 		return refreshToken;
-
-		// return token;
 	}	
 
 	async function updateToken(data) {
@@ -78,14 +78,11 @@ module.exports = function (injectedStore) {
 	const sanearTokenAuthBear = (token) => {
 		token = token.replace('Bearer', '');
 		token = token.replace(' ', '');
-		token = token.replace(' ', '');
 		token = token.replace(';', '');
-		console.log('Token Refresh: ', token);
-	
+		// console.log('Token Refresh: ', token);
 		return token;
 	}
 
-	
 	return {
 		login,
 		refresh,
