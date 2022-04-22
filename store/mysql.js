@@ -24,13 +24,12 @@ let connection; // <-Variable encargada de conexión
 
 function handleCon() {
 	connection = mysql.createConnection(dbconf);
-
 	connection.connect((err) => {
 		if (err) {
 			console.error('[db err]', err);
 			setTimeout(handleCon, 2000);
 		} else {
-			console.log('	BD Conecteda! ');
+			console.log('BD Conectada! ');
 		}
 	});
 
@@ -45,7 +44,6 @@ function handleCon() {
 }
 
 handleCon();
-
 
 const sanearParams= (params) =>{
 	let qry = '';

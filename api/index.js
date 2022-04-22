@@ -25,41 +25,42 @@ const swaggerDoc = require('@api/swagger.json');
 
 // Whitlist de acceso a API, tener en cuenta 
 const whitelist = [
-    'http://localhost:8080',
-    'http://127.0.0.1:8080',
-    'http://0.0.0.0:8080',
-    'https://myapp.com',
-    'http://127.0.0.1:5500',
-    'http://localhost:5500',
-    'http://localhost:3000',
-    'http://localhost',
-    'http://localhost:3005'
+  'http://localhost:8080',
+  'http://127.0.0.1:8080',
+  'http://0.0.0.0:8080',
+  'https://myapp.com',
+  'http://127.0.0.1:5500',
+  'http://localhost:5500',
+  'http://localhost:3000',
+  'http://localhost',
+  'http://localhost:3005'
 ];
-
 
 const app = express();
 
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
-
+require('@utils/auth'); // Declaración de manejo Auth
 
 // Declaración de Rutas
 const router = express.Router();
-app.use('/api/v1', router); // Ruta de origen
-router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc)); // Ruta documentacion API
-router.use('/user', user);
-router.use('/auth', auth);
-router.use('/companies', companies);
-router.use('/products', products);
-router.use('/prices', prices);
-router.use('/pricelist', priceList);
-router.use('/product_report', productReport);
-
-
+  app.use('/api/v1', router); // Ruta de origen
+  router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc)); // Ruta documentacion API
+  router.use('/user', user);
+  router.use('/auth', auth);
+  router.use('/companies', companies);
+  router.use('/products', products);
+  router.use('/prices', prices);
+  router.use('/pricelist', priceList);
+  router.use('/product_report', productReport);
 
 app.use(errors); //Handler Error
 
 //Lanzar API
 app.listen(config.api.port, () => {
+  console.log('*---------------------------------------------------*');
+  console.log('Servicio Unificado')
+  console.log('😊 Buen día...');
   console.log('API escuchando en el puerto ', config.api.port);
+  config.api.isProd == false && console.log(`Escuchando en: http://localhost:${ config.api.port } \n`);
 });

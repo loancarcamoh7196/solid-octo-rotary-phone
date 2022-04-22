@@ -27,7 +27,7 @@ module.exports = (injectedStore) => {
 
 	const update = (body, id) => {
 		const user = {
-			emp_rut: body.empRut,
+			emp_rut: body.emp_rut,
 			username: body.username,
 			password: body.password,
 			token: body.token,

@@ -10,7 +10,6 @@ const {createUserSchema, getUserSchema, updateUserSchema }  = require('./schema'
 
 const router = express.Router(); // Manejador de Rutas
 
-
 /**
  * Ruta encargada de listar usuarios
  * @param {request} req Petición HTTP
@@ -61,9 +60,9 @@ router.patch('/:id',
     // console.log('Params: ',req.params);
     // console.log('Body: ', req.body);
 
-    const { id } = req.params;
+    // const { id } = req.params;
 
-    Controller.update(req.body, req.paramsid)
+    Controller.update(req.body, req.params)
 		.then((user) => {
 			response.success(req, res, user, 201);
 		})

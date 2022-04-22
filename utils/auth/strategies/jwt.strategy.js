@@ -3,7 +3,7 @@ const { config } = require('@config');
 
 const options = {
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-	secretOrKey: config.refreshJwtSecret
+	secretOrKey: config.jwt.refresh
 };
 
 const JwtStrategy = new Strategy(options, (payload, done) => {

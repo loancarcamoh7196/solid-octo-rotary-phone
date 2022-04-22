@@ -7,6 +7,7 @@ const config = {
 	api: {
 		env: process.env.ENV || 'development',
 		port: process.env.API_PORT || 3030,
+		isProd: process.env.ENV === 'production',
 		key: process.env.API_KEY,
 	},
 	jwt: {
