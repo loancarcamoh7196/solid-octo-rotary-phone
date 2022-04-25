@@ -20,16 +20,16 @@ const router = express.Router(); // Manejador de Rutas
 router.get(
 	'/:lista_id',
 	passport.authenticate('jwt', { session: false }),
-	async (req, res, next) => {
+	(req, res, next) => {
 		const { empresaBd } = req.query;
 
-		try {
-			const lista = await Controller.list(empresaBd, req.body, req.params);
-			return response.success(req, res, lista, 200);
-		} catch (error) {
-			response.error(req, res, error, 400)
-			next(error);
-		}
+		Controller.list(empresaBd, req.body, req.params)
+		.then( lista => {
+			response.success(req, res, lista, 200);
+		})
+		.catch (error => {
+			next(response.error(req, res, error, 400));
+		})
 	}
 );
 
@@ -39,16 +39,16 @@ router.get(
 router.get(
 	'/:producto_id/detail/:precio_id',
 	passport.authenticate('jwt', { session: false }),
-	async (req, res, next) => {
+	(req, res, next) => {
 		const { empresaBd } = req.query;
 
-		try {
-			const user = await Controller.get(empresaBd, req.body, req.params);
-			return response.success(req, res, user, 200);
-		} catch (error) {
-			response.error(req, res, error, 400)
-			next(error);
-		}
+		Controller.get(empresaBd, req.body, req.params)
+			.then( prod => {
+				response.success(req, res, prod, 200);
+			})
+			.catch (error => {
+				next(response.error(req, res, error, 400));
+			})
 	}
 );
 
@@ -58,15 +58,16 @@ router.get(
 router.post(
 	'/',
 	passport.authenticate('jwt', { session: false }),
-	async (req, res, next) => {
+	(req, res, next) => {
 		const { empresaBd } = req.query;
-		try {
-			const user = await Controller.insert(empresaBd, req.body);
-			return response.success(req, res, user, 201);
-		} catch (error) {
-			response.error(req, res, error, 400)
-			next(error);
-		}
+		
+		Controller.insert(empresaBd, req.body)
+			.then(prod => {
+				response.success(req, res, prod, 201);
+			})
+			.catch (error=> {
+			next(response.error(req, res, error, 400));
+			})
 	}
 );
 
@@ -76,17 +77,14 @@ router.post(
 router.patch(
 	'/:producto_id/edit/:lista_id',
 	passport.authenticate('jwt', { session: false }),
-	async (req, res, next) => {
+	(req, res, next) => {
 		const { empresaBd } = req.query;
-		// console.log('Params: ',req.params);
-		// console.log('Body: ', req.body);
-		try {
-			const user = Controller.update(empresaBd, req.body, req.params);
-			return response.success(req, res, user, 201);
-		} catch (error) {
-			response.error(req, res, error, 400)
-			next(error);
-		}
+		Controller.update(empresaBd, req.body, req.params)
+			.then( prod => { response.success(req, res, prod, 201);
+			})
+			.catch (error =>  {
+				next(response.error(req, res, error, 400));
+			})
 	}
 );
 
@@ -96,16 +94,16 @@ router.patch(
 router.delete(
 	'/:producto_id/delete/:lista_id',
 	passport.authenticate('jwt', { session: false }),
-	async (req, res, next) => {
+	(req, res, next) => {
 		const { empresaBd } = req.query;
 
-		try {
-			const user = Controller.drop(empresaBd, req.params);
-			response.success(req, res, user, 200);
-		} catch (error) {
-			response.error(req, res, error, 400)
-			next(error);
-		}
+		Controller.drop(empresaBd, req.params)
+			.then( prod => {
+				response.success(req, res, prod, 200);
+			})
+			.catch(error =>  {
+				next(response.error(req, res, error, 400));
+			})
 	}
 );
 

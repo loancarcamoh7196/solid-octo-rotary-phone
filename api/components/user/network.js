@@ -20,14 +20,14 @@ const router = express.Router(); // Manejador de Rutas
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
-  async (req, res, next) => {
-    try {
-      const lista = await Controller.list();
-      return response.success(req, res, lista, 200);
-    } catch (error) {
-      response.error(req, res, error, 400)
-			next(error);
-    }
+  (req, res, next) => {
+    Controller.list().
+      then(lista => {
+        response.success(req, res, lista, 200);
+      })
+      .catch (error => {
+        next(response.error(req, res, error, 400));
+      })
   }
 );
 
@@ -38,14 +38,14 @@ router.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
   validationHandler(getUserSchema, 'params'),
-  async (req, res, next)=> {
-    try {
-      const  user = await Controller.get(req.params);
-      return response.success(req, res, user, 200);
-    } catch (error) {
-      response.error(req, res, error, 400)
-			next(error);
-    }
+  (req, res, next)=> {
+    Controller.get(req.params).
+      then( user => {
+        response.success(req, res, user, 200);
+      })
+      .catch(error =>  {
+        next(response.error(req, res, error, 400));
+      })
   }
 );
 
@@ -56,14 +56,14 @@ router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
   validationHandler(createUserSchema, 'body'),
-  async (req, res, next) => {
-    try {
-      const user = await Controller.insert(req.body);
-      return response.success(req, res, user, 201);
-    } catch (error) {
-      response.error(req, res, error, 400)
-			next(error);
-    }
+  (req, res, next) => {
+    Controller.insert(req.body).
+      then( user => {
+        response.success(req, res, user, 201);
+      })
+      .catch (error => {
+        next(response.error(req, res, error, 400));
+      })
   }
 );
 
@@ -73,18 +73,18 @@ router.post(
 router.patch(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  validationHandler(updateUserSchema, 'params'),
-  async (req, res, next)=> {
+  // validationHandler(updateUserSchema, 'params'),
+  (req, res, next)=> {
     // console.log('Params: ',req.params);
     // console.log('Body: ', req.body);
     // const { id } = req.params;
-    try {
-      const  user = await Controller.update(req.body, req.params);
-      return response.success(req, res, user, 201);
-    } catch (error) {
-      response.error(req, res, error, 400)
-			next(error);
-    }
+    Controller.update(req.body, req.params).
+      then( user => {
+        response.success(req, res, user, 201);
+      })
+      . catch(error => {
+        next(response.error(req, res, error, 400));
+      })
   }
 );
 
@@ -95,14 +95,14 @@ router.patch(
 router.delete(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  async (req, res, next) => {
-    try {
-      const user = await Controller.drop(req.params);
-      return response.success(req, res, user, 200);
-    } catch (error) {
-      response.error(req, res, error, 400)
-			next(error);
-    }
+  (req, res, next) => {
+    Controller.drop(req.params)
+      .then( user => {
+        response.success(req, res, user, 200);
+      })
+      .catch (error=> {
+        next(response.error(req, res, error, 400));
+      })
   }
 );
 

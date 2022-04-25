@@ -20,14 +20,14 @@ const router = express.Router(); // Manejador de Rutas
  */
 router.get('/',
 	passport.authenticate('jwt', { session: false }),
-	async (req, res, next) => {
-		try {
-			const lista = await Controller.list();
-			return response.success(req, res, lista, 200);
-		} catch (error) {
-			response.error(req, res, error, 400)
-			next(error);
-		}
+	(req, res, next) => {
+		Controller.list()
+			.then(lista => {
+				response.success(req, res, lista, 200);
+			})
+		.catch (error => {
+			next(response.error(req, res, error, 400));
+		})
 	}
 );
 
@@ -37,20 +37,16 @@ router.get('/',
 router.get('/:rut',
 	passport.authenticate('jwt', { session: false }),
 	validationHandler(getCompanySchema, 'params'),
-	async (req, res, next) => {
-		try {
-			const users = await Controller.get(req.params);
-			return response.success(req, res, users, 200);	
-		} catch (error) {
-			response.error(req, res, error, 400)
-			next(error);
-		}
-	// Controller.get(req.params)
-	// 	.then((user) => {
-	// 		response.success(req, res, user, 200);
-	// 	})
-	// 	.catch(next);
-});
+	(req, res, next) => {
+		Controller.get(req.params)
+		.then(user =>{
+			response.success(req, res, user, 200)
+		})
+		.catch(error => {
+			next(response.error(req, res, error, 400));
+		});
+	}
+);
 
 /**
  * Ruta encargada de agregar empresa
@@ -58,14 +54,13 @@ router.get('/:rut',
 router.post('/',
 	passport.authenticate('jwt', { session: false }),
 	validationHandler(createCompanySchema, 'body'),
-	async (req, res, next) => {
-		try {
-			const user = 	await Controller.insert(req.body)
-			return response.success(req, res, user, 201);
-		} catch (error) {
-			response.error(req, res, error, 400);
-			next(error);
-		}	
+	(req, res, next) => {
+		Controller.insert(req.body)
+			.then((user) => { response.success(req, res, user, 201) 
+			})
+			.catch(error => {
+				next(response.error(req, res, error, 400));
+			})	
 	}
 );
 
@@ -76,16 +71,16 @@ router.patch('/:rut',
 	passport.authenticate('jwt', { session: false }),
 	validationHandler(getCompanySchema, 'params'),
 	validationHandler(updateCompanySchema, 'body'),
-	async (req, res, next) => {
+	(req, res, next) => {
 	// console.log('Params: ',req.params);
 	// console.log('Body: ', req.body);
-		try {
-			user = await Controller.update(req.body, req.params);
-			return response.success(req, res, user, 201);
-		} catch (error) {
-			response.error(req, res, error, 400);
-			next(error);
-		}
+		Controller.update(req.body, req.params)
+			.then ( user => {
+				response.success(req, res, user, 201)
+			})
+			.catch(error => {
+				next(response.error(req, res, error, 400));
+			});
 	}
 );
 
@@ -94,14 +89,14 @@ router.patch('/:rut',
  */
 router.delete('/:rut',
 	passport.authenticate('jwt', { session: false }),
-	async (req, res, next) => {
-		try {
-			const user = 	await Controller.drop(req.params);
-			return response.success(req, res, user, 200);
-		} catch (error) {
-			response.error(req, res, error, 400);
-			next(error);
-		}
+	(req, res, next) => {
+		Controller.drop(req.params)
+		.then( user => {
+			response.success(req, res, user, 200)
+		})
+		.catch(error => {
+			next(response.error(req, res, error, 400));
+		})
 	}
 );
 

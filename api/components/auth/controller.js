@@ -48,10 +48,10 @@ module.exports = function (injectedStore) {
 
 	const refresh = async(data) =>{
 		console.log('Proceso de Refresh Token')
-		// console.log(data);
+		console.log(data);
 		const  token = sanearTokenAuthBear(data.headers.authorization);
 
-		let isCorrect = jwt.verify(token, config.jwt.refresh, {ignoreExpiration: true} );
+		let isCorrect = await jwt.verify(token, config.jwt.refresh, {ignoreExpiration: true} );
 		// console.log('Es correcto: ', isCorrect)
 		if (!isCorrect) throw new Error('Acceso denegado');
 		const user = findUser({ id: isCorrect.sub });
