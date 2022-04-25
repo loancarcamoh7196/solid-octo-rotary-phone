@@ -23,6 +23,7 @@ module.exports = function (injectedStore) {
 	 */
 	const login = async (username, password) => {
 		try {
+			console.log('Proceso Login')
 			const data = await store.query(DB_NAME, TABLA, { username: username });
 			// console.log(data);
 			const isMatch = await bcrypt.compare(password, data.password); 
@@ -46,7 +47,7 @@ module.exports = function (injectedStore) {
 	};	
 
 	const refresh = async(data) =>{
-		console.log('Paso por refresh')
+		console.log('Proceso de Refresh Token')
 		// console.log(data);
 		const  token = sanearTokenAuthBear(data.headers.authorization);
 

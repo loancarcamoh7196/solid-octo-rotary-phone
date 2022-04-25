@@ -3,9 +3,10 @@
  * ? URI: /api/users
  */
 const express = require('express');
+const passport = require('passport');
 const response = require('@network/response');
-const auth = require('../auth');
 const Controller = require('./index');
+const validationHandler = require('@utils/validation.handler');
 const {createUserSchema, getUserSchema, updateUserSchema }  = require('./schema');
 
 const router = express.Router(); // Manejador de Rutas
@@ -16,57 +17,74 @@ const router = express.Router(); // Manejador de Rutas
  * @param {response} res Respuesta de la petición
  * @param {*} next Excepción arrojada
  */
-router.get('/',
-  (req, res, next) => {
-    Controller.list()
-      .then((lista) => {
-        response.success(req, res, lista, 200);
-      })
-      .catch(next);
+router.get(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const lista = await Controller.list();
+      return response.success(req, res, lista, 200);
+    } catch (error) {
+      response.error(req, res, error, 400)
+			next(error);
+    }
   }
 );
 
 /**
  * Ruta encargada de mostrar usuario especifico
  */
-router.get('/:id',
-  (req, res, next)=> {
-    Controller.get(req.params)
-      .then((user) => {
-        response.success(req, res, user, 200);
-      })
-      .catch(next);
+router.get(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  validationHandler(getUserSchema, 'paramas'),
+  async (req, res, next)=> {
+    try {
+      const  user = await Controller.get(req.params);
+      return response.success(req, res, user, 200);
+    } catch (error) {
+      response.error(req, res, error, 400)
+			next(error);
+    }
   }
 );
 
 /**
  * Ruta encargada de agregar usuario
  */
-router.post('/',
-  (req, res, next) => {
-    Controller.insert(req.body)
-      .then((user)=> {
-        response.success(req, res, user, 201)
-      })
-      .catch(next)
+router.post(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  validationHandler(createUserSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const user = await Controller.insert(req.body);
+      return response.success(req, res, user, 201);
+    } catch (error) {
+      response.error(req, res, error, 400)
+			next(error);
+    }
   }
 );
 
 /**
  * Ruta encargada de modificar usuario especifico
  */
-router.patch('/:id',
-  (req, res, next)=> {
+router.patch(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  validationHandler(updateUserSchema, 'params'),
+  async (req, res, next)=> {
     // console.log('Params: ',req.params);
     // console.log('Body: ', req.body);
-
     // const { id } = req.params;
-
-    Controller.update(req.body, req.params)
-		.then((user) => {
-			response.success(req, res, user, 201);
-		})
-		.catch(next);
+    try {
+      const  user = await Controller.update(req.body, req.params);
+      return response.success(req, res, user, 201);
+    } catch (error) {
+      response.error(req, res, error, 400)
+			next(error);
+    }
   }
 );
 
@@ -74,12 +92,17 @@ router.patch('/:id',
 /**
  * Ruta encargada de eliminar usuario
  */
-router.delete('/:id', (req, res, next) => {
-	Controller.drop(req.params)
-		.then((user) => {
-			response.success(req, res, user, 200);
-		})
-		.catch(next);
+router.delete(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const user = await Controller.drop(req.params);
+      return response.success(req, res, user, 200);
+    } catch (error) {
+      response.error(req, res, error, 400)
+			next(error);
+    }
   }
 );
 

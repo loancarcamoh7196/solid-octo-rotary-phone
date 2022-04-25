@@ -23,12 +23,12 @@ exports.success = (req, res, message, status) => {
  * @param {int} status Codigo http de respuesta
  */
 exports.error = (req,res, message, status)=> {
-  let statusCode = status|| 500;
+  let statusCode = status || 500;
   let statusMessage = message || 'Internal server error';
 
   res.status(statusCode).send({
     error: true,
     status: statusCode,
-    body: statusCode
+    body: statusMessage
   })
 }

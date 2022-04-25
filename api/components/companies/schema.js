@@ -9,15 +9,15 @@ const Joi = require('joi');
 /**
  * Campos reales de la Tabla
  */
-// const id = Joi.number().integer().max(11);
-const id = Joi.string().max(10);
+// const rut = Joi.number().integer().max(11);
+const rut = Joi.string().max(10);
 const razon = Joi.string();
 const bdNombre = Joi.string();
 const uri = Joi.string();
 
 
 const createCompanySchema = Joi.object({
-	id: id.required(),
+	rut: rut.required(),
 	razon: razon.required(),
 	bdNombre: bdNombre.required(),
 	uri
@@ -30,7 +30,7 @@ const updateCompanySchema = Joi.object({
 });
 
 const getCompanySchema = Joi.object({
-	id: id.required(),
+	rut: rut.required(),
 });
 
 const queryCompanySchema = Joi.object({

@@ -2,7 +2,7 @@
  * * Controlador / service  de User ~ Usuario
  */
 const bcrypt = require('bcrypt');
-const auth = require('../auth');	
+// const auth = require('../auth');	
 
 //Datos Especificos de BD
 const DB_NAME = 'empresas_';
@@ -11,11 +11,11 @@ const TABLA = 'usr_';
 //InjectedStore se encuentra declarada en index.js de la carpeta
 module.exports = (injectedStore) => {
 	let store = injectedStore;// Utilizamos store declara en el index de la carpeta
-
-	if (!store)  store = require('@store/dummy');
+	// if (!store)  store = require('@store/dummy');
 	
 	const list = () => {
-		return store.list(DB_NAME,TABLA);
+		console.log('Paso por lista de usuarios');
+		return store.list(DB_NAME, TABLA);
 	}
 
 	//Obtiene listado por id de 	

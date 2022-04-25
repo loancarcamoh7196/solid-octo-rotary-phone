@@ -4,10 +4,11 @@
  */
 const express = require('express');
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
+
 const response = require('@network/response');
 const Controller = require('./index');
-const { getCompanySchema, updateCompanySchema, queryCompanySchema } = require('./schema');
+const validationHandler = require('@utils/validation.handler');
+const { getCompanySchema, updateCompanySchema, queryCompanySchema, createCompanySchema } = require('./schema');
 
 const router = express.Router(); // Manejador de Rutas
 
@@ -19,12 +20,14 @@ const router = express.Router(); // Manejador de Rutas
  */
 router.get('/',
 	passport.authenticate('jwt', { session: false }),
-	(req, res, next) => {
-		Controller.list()
-			.then((lista) => {
-				response.success(req, res, lista, 200);
-			})
-			.catch(next);
+	async (req, res, next) => {
+		try {
+			const lista = await Controller.list();
+			return response.success(req, res, lista, 200);
+		} catch (error) {
+			response.error(req, res, error, 400)
+			next(error);
+		}
 	}
 );
 
@@ -33,12 +36,20 @@ router.get('/',
  */
 router.get('/:rut',
 	passport.authenticate('jwt', { session: false }),
-	(req, res, next) => {
-	Controller.get(req.params)
-		.then((user) => {
-			response.success(req, res, user, 200);
-		})
-		.catch(next);
+	validationHandler(getCompanySchema, 'params'),
+	async (req, res, next) => {
+		try {
+			const users = await Controller.get(req.params);
+			return response.success(req, res, users, 200);	
+		} catch (error) {
+			response.error(req, res, error, 400)
+			next(error);
+		}
+	// Controller.get(req.params)
+	// 	.then((user) => {
+	// 		response.success(req, res, user, 200);
+	// 	})
+	// 	.catch(next);
 });
 
 /**
@@ -46,43 +57,52 @@ router.get('/:rut',
  */
 router.post('/',
 	passport.authenticate('jwt', { session: false }),
-	(req, res, next) => {
-	Controller.insert(req.body)
-		.then((user) => {
-			response.success(req, res, user, 201);
-		})
-		.catch(next);
-});
+	validationHandler(createCompanySchema, 'body'),
+	async (req, res, next) => {
+		try {
+			const user = 	await Controller.insert(req.body)
+			return response.success(req, res, user, 201);
+		} catch (error) {
+			response.error(req, res, error, 400);
+			next(error);
+		}	
+	}
+);
 
 /**
  * Ruta encargada de modificar empresa especifico
  */
 router.patch('/:rut',
 	passport.authenticate('jwt', { session: false }),
-	(req, res, next) => {
+	validationHandler(getCompanySchema, 'params'),
+	validationHandler(updateCompanySchema, 'body'),
+	async (req, res, next) => {
 	// console.log('Params: ',req.params);
 	// console.log('Body: ', req.body);
-
-	// const { id } = req.params;
-
-	Controller.update(req.body, req.params)
-		.then((user) => {
-			response.success(req, res, user, 201);
-		})
-		.catch(next);
-});
+		try {
+			user = await Controller.update(req.body, req.params);
+			return response.success(req, res, user, 201);
+		} catch (error) {
+			response.error(req, res, error, 400);
+			next(error);
+		}
+	}
+);
 
 /**
  * Ruta encargada de eliminar empresa
  */
 router.delete('/:rut',
 	passport.authenticate('jwt', { session: false }),
-	(req, res, next) => {
-	Controller.drop(req.params)
-		.then((user) => {
-			response.success(req, res, user, 200);
-		})
-		.catch(next);
-});
+	async (req, res, next) => {
+		try {
+			const user = 	await Controller.drop(req.params);
+			return response.success(req, res, user, 200);
+		} catch (error) {
+			response.error(req, res, error, 400);
+			next(error);
+		}
+	}
+);
 
 module.exports = router;
