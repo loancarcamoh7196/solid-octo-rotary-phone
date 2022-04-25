@@ -37,7 +37,7 @@ router.get(
 router.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  validationHandler(getUserSchema, 'paramas'),
+  validationHandler(getUserSchema, 'params'),
   async (req, res, next)=> {
     try {
       const  user = await Controller.get(req.params);

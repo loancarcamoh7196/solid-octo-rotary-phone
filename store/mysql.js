@@ -46,30 +46,33 @@ function handleCon() {
 handleCon();
 
 const sanearParams= (params) =>{
-	let qry = '';
-	let lengthParams = Object.keys(params).length;
-	let count = 1;
+	if(params != null){
+		let qry = '';
+		let lengthParams = Object.keys(params).length;
+		let count = 1;
 
-	console.log('Largo de Params: ', lengthParams);
-	console.log('Params: ', params);
+		console.log('Largo de Params: ', lengthParams);
+		console.log('Params: ', params);
 
-	if (lengthParams > 1) {
-		console.log('Tiene varios parametros');
-		// Object.entries(params).forEach((key, value) => {
-		// 	qry = qry + key + '=' + value + ' AND ';
-		// })
+		if (lengthParams > 1) {
+			console.log('Tiene varios parametros');
+			// Object.entries(params).forEach((key, value) => {
+			// 	qry = qry + key + '=' + value + ' AND ';
+			// })
 
-		for (const [key, value] of Object.entries(params)) {
-			// console.log(value);
-			qry = qry + `${key}=${value} `;
-			if (count < lengthParams) {
-				qry = qry + ' AND ';
+			for (const [key, value] of Object.entries(params)) {
+				// console.log(value);
+				qry = qry + `${key}=${value} `;
+				if (count < lengthParams) {
+					qry = qry + ' AND ';
+				}
+				count++;
 			}
-			count++;
 		}
-	}
 
-	return qry;
+		return qry;
+	}
+	else return '';
 }
 
 /**
@@ -78,13 +81,27 @@ const sanearParams= (params) =>{
  * @param {string} table Nombre de la tabla que desea manejar
  * @returns lista de todos los registros 
  */
-const list = (db, table)=> {
+const list = (db, table, params )=> {
+
+	qry = sanearParams(params);
+
+	// console.log(typeof(qry))
+
+	if(qry == '') {
 	return new Promise((resolve, reject) => {
 		connection.query(`SELECT * FROM ${db}.${table}`, (err, data) => {
 			if (err) return reject(err);
 			resolve(data);
 		});
 	});
+	}else {
+		return new Promise((resolve, reject) => {
+			connection.query(`SELECT * FROM ${db}.${table} WHERE  ${qry}`, (err, data) => {
+				if (err) return reject(err);
+				resolve(data);
+			});
+		});
+	}
 	connection.end();
 }
 
@@ -100,14 +117,12 @@ const get = (db, table, params) => {
 	// console.log(params);
 	qry = sanearParams(params);
 
-	console.log(typeof(qry))
-
 	if(qry == '') {
 		// console.log('Pso por aqui')
 	return new Promise((resolve, reject) => {
 		connection.query(`SELECT * FROM ${db}.${table} WHERE  ?`, params, (err, data) => {
 			if (err) return reject(err);
-			resolve(data);
+			resolve(data[0] || null);
 		});
 	});
 	}else {
@@ -116,7 +131,7 @@ const get = (db, table, params) => {
 		return new Promise((resolve, reject) => {
 		connection.query(`SELECT * FROM ${db}.${table} WHERE  ${qry}`, (err, data) => {
 			if (err) return reject(err);
-			resolve(data);
+			resolve(data[0] || null);
 		});
 	});
 	}

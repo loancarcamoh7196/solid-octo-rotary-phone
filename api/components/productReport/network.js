@@ -24,7 +24,7 @@ router.get(
 		const { empresaBd } = req.query;
 
 		try {
-			const lista = await Controller.get(empresaBd, req.body, req.params);
+			const lista = await Controller.list(empresaBd, req.body, req.params);
 			return response.success(req, res, lista, 200);
 		} catch (error) {
 			response.error(req, res, error, 400)

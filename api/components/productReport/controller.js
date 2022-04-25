@@ -18,9 +18,9 @@ const priceController = require('@components/prices');
 module.exports = (injectedStore) => {
 	let store = injectedStore; // Utilizamos store declara en el index de la carpeta
 
-	const list = (params, db) => {
+	const list = (db, body, params) => {
 		DB_NAME = db;	
-		return store.list(DB_NAME, TABLA);
+		return store.list(DB_NAME, TABLA, params);
 	};
 
 	const get = (db, body, params) => {

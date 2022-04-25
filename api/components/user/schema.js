@@ -16,14 +16,14 @@ const password = Joi.string();
 const token = Joi.string();
 const email = Joi.string();
 
-const createuserSchema = Joi.object({
+const createUserSchema = Joi.object({
 	empRut: empRut.required(),
 	username,
 	password,
 	token
 });
 
-const updateuserSchema = Joi.object({
+const updateUserSchema = Joi.object({
 	empRut,
 	username,
 	password,
@@ -31,12 +31,12 @@ const updateuserSchema = Joi.object({
 	email
 });
 
-const getuserSchema = Joi.object({
+const getUserSchema = Joi.object({
 	id: id.required(),
 });
 
 module.exports = {
-	createuserSchema,
-	updateuserSchema,
-	getuserSchema,
+	createUserSchema,
+	updateUserSchema,
+	getUserSchema,
 };
