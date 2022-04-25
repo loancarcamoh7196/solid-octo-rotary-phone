@@ -45,6 +45,11 @@ function handleCon() {
 
 handleCon();
 
+/**
+ * Función encargada de sanear parametros de un select
+ * @param {element} params Elemento con paramatros para sanear
+ * @returns parametors saneados o un blanco
+ */
 const sanearParams= (params) =>{
 	if(params != null){
 		let qry = '';
