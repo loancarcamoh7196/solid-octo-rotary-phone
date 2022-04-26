@@ -50,8 +50,8 @@ handleCon();
  * @param {element} params Elemento con paramatros para sanear
  * @returns parametors saneados o un blanco
  */
-const sanearParams= (params) =>{
-	if(params != null){
+const sanearParams= (params={}) =>{
+	if( Object.keys(params).length !== 0 ){
 		let qry = '';
 		let lengthParams = Object.keys(params).length;
 		let count = 1;
@@ -59,22 +59,14 @@ const sanearParams= (params) =>{
 		console.log('Largo de Params: ', lengthParams);
 		console.log('Params: ', params);
 
-		if (lengthParams > 1) {
-			console.log('Tiene varios parametros');
-			// Object.entries(params).forEach((key, value) => {
-			// 	qry = qry + key + '=' + value + ' AND ';
-			// })
-
-			for (const [key, value] of Object.entries(params)) {
-				// console.log(value);
-				qry = qry + `${key}=${value} `;
-				if (count < lengthParams) {
-					qry = qry + ' AND ';
-				}
-				count++;
+		for (const [key, value] of Object.entries(params)) {
+			// console.log(value);
+			qry = qry + `${key}=${value} `;
+			if (count < lengthParams) {
+				qry = qry + ' AND ';
 			}
+			count++;
 		}
-
 		return qry;
 	}
 	else return '';
@@ -87,19 +79,22 @@ const sanearParams= (params) =>{
  * @returns lista de todos los registros 
  */
 const list = (db, table, params )=> {
-
+	// console.log(params);
+	// console.log(typeof(params));
 	qry = sanearParams(params);
 
 	// console.log(typeof(qry))
-
+	// console.log('QRY: ',qry);
 	if(qry == '') {
-	return new Promise((resolve, reject) => {
-		connection.query(`SELECT * FROM ${db}.${table}`, (err, data) => {
-			if (err) return reject(err);
-			resolve(data);
+		console.log(`SELECT * FROM ${db}.${table}`);
+		return new Promise((resolve, reject) => {
+			connection.query(`SELECT * FROM ${db}.${table}`, (err, data) => {
+				if (err) return reject(err);
+				resolve(data);
+			});
 		});
-	});
 	}else {
+		console.log(`SELECT * FROM ${db}.${table} WHERE  ${qry}`);
 		return new Promise((resolve, reject) => {
 			connection.query(`SELECT * FROM ${db}.${table} WHERE  ${qry}`, (err, data) => {
 				if (err) return reject(err);
